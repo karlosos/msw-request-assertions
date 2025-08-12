@@ -1,69 +1,31 @@
-# React + TypeScript + Vite
+# MSW 1.x to 2.x Migration Example with Request Assertion
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project serves as a practical example and guide for migrating an existing application using Mock Service Worker (MSW) from version 1.x to 2.x. It specifically highlights how to handle request payload assertions using `waitForRequest` in MSW 2.x, a common requirement for testing with `jest`.
 
-Currently, two official plugins are available:
+## Project Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is a standard React application bootstrapped with Vite, configured to use Jest for testing. It demonstrates a typical frontend development setup where API calls are mocked for development and testing purposes.
 
-## Expanding the ESLint configuration
+- **Framework**: React
+- **Build Tool**: Vite
+- **Testing Framework**: Jest
+- **Mocking Library**: Mock Service Worker (MSW) 2.x
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Key Focus: `waitForRequest` and Request Payload Assertion
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+One of the significant changes in MSW 2.x is how requests are intercepted and asserted, especially when you need to verify the payload sent by your application. This example provides a clear demonstration of using `waitForRequest` to:
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Capture outgoing requests.
+- Assert on the request body, headers, or other properties.
+- Ensure your application sends the correct data to the mocked API endpoints.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Comparing with the `master` Branch (MSW 1.x)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The branch (`msw-2.x-migration-example`) represents the migrated state, showcasing the MSW 2.x implementation. If you were to compare this with a hypothetical `master` branch still on MSW 1.x, you would observe the following key differences:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **MSW Setup**: The `setupWorker` and `setupServer` imports and initialization would differ, reflecting the updated API in MSW 2.x.
+- **Handler Definitions**: The syntax for defining request handlers (`rest.get`, `rest.post`, etc.) has evolved. MSW 2.x introduces a more explicit and type-safe way to define handlers.
+- **Request Assertion**: The most notable change for testing is the transition from direct request interception patterns (common in MSW 1.x) to the more structured `waitForRequest` utility in MSW 2.x for asserting on request payloads. This branch demonstrates the recommended `waitForRequest` pattern.
+- **Test Utilities**: Any custom test utilities or helpers built around MSW 1.x's API would need to be updated to align with MSW 2.x's new features and patterns.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+By examining the changes in this branch, developers can gain insights into the necessary adjustments for a smooth migration from MSW 1.x to 2.x, particularly concerning request assertion in tests.
