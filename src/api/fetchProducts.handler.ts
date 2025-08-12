@@ -1,7 +1,9 @@
 import { rest } from "msw";
 
+export const FETCH_PRODUCTS_URL = "*/api/product";
+
 export const fetchProductsHandler = rest.get(
-  "*/api/product",
+  FETCH_PRODUCTS_URL,
   (_req, res, ctx) => {
     return res(
       ctx.json([
