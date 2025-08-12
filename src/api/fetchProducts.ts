@@ -1,3 +1,4 @@
+import axios from "axios";
 import type { SortParam } from "./types";
 
 export type Product = {
@@ -15,27 +16,25 @@ export async function fetchProducts({
   sort,
 }: FetchProductsRequest): Promise<FetchProductsResponse> {
   try {
-    const url = new URL("http://localhost:3000/api/product");
+    const params: Record<string, string> = {};
+
     if (sort) {
-      url.searchParams.set("sort", `${sort.field}:${sort.order}`);
+      params.sort = `${sort.field}:${sort.order}`;
     }
 
-    const response = await fetch(url.toString(), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const { data } = await axios.get<Product[]>(
+      "http://localhost:3000/api/product",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params,
+      }
+    );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data: Product[] = await response.json();
     return data;
   } catch (error) {
     console.error("Error fetching products:", error);
+    return [];
   }
-
-  return [];
 }
