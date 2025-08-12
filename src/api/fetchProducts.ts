@@ -23,7 +23,7 @@ export async function fetchProducts({
     }
 
     const { data } = await axios.get<Product[]>(
-      "http://localhost:3000/api/product",
+      "/api/product",
       {
         headers: {
           "Content-Type": "application/json",

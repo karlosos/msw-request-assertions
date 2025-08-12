@@ -14,7 +14,7 @@ describe("fetchProducts", () => {
     // THEN
     const apiRequest = await pendingRequest;
     const calledApiUrl = apiRequest.url.toString();
-    expect(calledApiUrl).toEqual("http://localhost:3000/api/product");
+    expect(calledApiUrl).toEqual("http://localhost/api/product");
 
     expect(response).toStrictEqual(expectedResponse);
   });
@@ -35,9 +35,7 @@ describe("fetchProducts", () => {
     // THEN
     const apiRequest = await pendingRequest;
     const calledApiUrl = apiRequest.url.toString();
-    expect(calledApiUrl).toEqual(
-      "http://localhost:3000/api/product?sort=id:asc"
-    );
+    expect(calledApiUrl).toEqual("http://localhost/api/product?sort=id:asc");
 
     expect(response).toStrictEqual(expectedResponse);
   });
