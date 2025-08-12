@@ -1,33 +1,37 @@
 import { setupServer } from "msw/node";
 import { handlers } from "./handlers";
-import { matchRequestUrl, type MockedRequest } from "msw";
+import { matchRequestUrl } from "msw";
 
 export const server = setupServer(...handlers);
 
-// Source from: https://v1.mswjs.io/docs/extensions/life-cycle-events#asserting-request-payload
 export const waitForRequest = (method: string, url: string) => {
   let requestId = "";
 
-  return new Promise<MockedRequest>((resolve, reject) => {
+  return new Promise<Request>((resolve, reject) => {
     server.events.on("request:start", (req) => {
-      const matchesMethod = req.method.toLowerCase() === method.toLowerCase();
-      const matchesUrl = matchRequestUrl(req.url, url).matches;
+      const matchesMethod =
+        req.request.method.toLowerCase() === method.toLowerCase();
+      const matchesUrl = matchRequestUrl(new URL(req.request.url), url).matches;
 
       if (matchesMethod && matchesUrl) {
-        requestId = req.id;
+        requestId = req.requestId;
       }
     });
 
     server.events.on("request:match", (req) => {
-      if (req.id === requestId) {
-        resolve(req);
+      if (req.requestId === requestId) {
+        resolve(req.request);
       }
     });
 
     server.events.on("request:unhandled", (req) => {
-      if (req.id === requestId) {
+      if (req.requestId === requestId) {
         reject(
-          new Error(`The ${req.method} ${req.url.href} request was unhandled.`)
+          new Error(
+            `The ${req.request.method} ${
+              new URL(req.request.url).href
+            } request was unhandled.`
+          )
         );
       }
     });
